@@ -34,7 +34,7 @@ statusCodes[409] = 'Conflict';
 statusCodes[410] = 'Gone';
 statusCodes[411] = 'Length Required';
 statusCodes[412] = 'Precondition Failed';
-statusCodes[413] = 'Request Entity Too Large';
+statusCodes[413] = 'Request Entity Too Large';  
 statusCodes[414] = 'Request-URI Too Long';
 statusCodes[415] = 'Unsupported Media Type';
 statusCodes[416] = 'Requested range not satisfiable';
@@ -86,6 +86,8 @@ function clearFields() {
 
   $("#respHeaders").css("display", "none");
   $("#respData").css("display", "none");
+  $("#respData").css("display", "none");
+  $("#postputaction").css("display", "none");
 }
 
 function sendRequest() {
@@ -122,9 +124,9 @@ function sendRequest() {
   } else {
   
   	if($("#url").val() == "")
-  		alert('Please provide a URL to call');
+  		smoke.alert('Please provide a URL to call');
   	else
-  		alert('Please provide a valid URL');
+  		smoke.alert('Please provide a valid URL');
     //console.log("no uri");
     //$("#responseStatus").html("<span style=\"color:#FF0000\">"+chrome.i18n.getMessage("bad_request")+"</span>");
     $("#respHeaders").css("display", "none");
@@ -184,8 +186,10 @@ function readResponse() {
 function toggleData() {
   if(jQuery.inArray($(':selected').val(), ["post", "put"]) > -1) {
     $("#data").css("display", "");
+    $("#postputaction").css("display", "");
   } else {
     $("#data").css("display", "none");
+    $("#postputaction").css("display", "none");
   }
 }
 
@@ -205,6 +209,7 @@ function init() {
   $("#responsePrint").css("display", "none");
 
   $("#data").css("display", "none");
+  $("#postputaction").css("display", "none");
 
   $("#responseStatus").html("");
   $("#respHeaders").css("display", "none");

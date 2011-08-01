@@ -6,6 +6,9 @@
     <link rel="stylesheet" type="text/css" href="reset.min.css" />
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="jquery.min.js"></script>
+    <link rel="stylesheet" href="smoke/smoke.css" type="text/css" media="screen" />  
+    <link rel="stylesheet" href="smoke/100s.css" type="text/css" media="screen" />  
+    <script type="text/javascript" src="smoke/smoke.min.js"></script>
 
 <script type="text/javascript" src="jquery.chili.min.js"></script>
 <script type="text/javascript" src="jquery.chili.recipes.js"></script>
@@ -36,12 +39,12 @@
         <p id="pheaders">
           <label for="headers" class="_msg_">Headers</label>
           <div><textarea id="headers" name="headers" placeholder='access_token: "f0258b6685684c113bad94d91b8fa02a"' id="headers" tabindex="3" onkeyup="grow('headers');"></textarea>
-          <ul id="postputaction" class="action"><li>form</li><li>hide</li></ul></div>
+          <ul class="action"><li>form</li><li>hide</li></ul></div>
         </p>
         <p id="data">
           <label for="postputdata" class="_msg_">Data</label>
-          <textarea name="data" id="postputdata" tabindex="4" placeholder="firt_name=John&last_name=Joe" onkeyup="grow('postputdata');"></textarea>
-          <ul class="action"><li>form</li><li>hide</li></ul></div>
+          <textarea name="data" id="postputdata" tabindex="4" placeholder="first_name=John&last_name=Joe" onkeyup="grow('postputdata');"></textarea>
+          <ul id="postputaction"class="action"><li>form</li><li>hide</li></ul></div>
         </p>
         <p class="buttons">
           <input class="_msg_val_" type="button" value="send" id="submit" tabindex="5"> <input class="_msg_val_" type="button" value="clear" id="reset"> 
