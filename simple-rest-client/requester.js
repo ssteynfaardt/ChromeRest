@@ -47,12 +47,26 @@ statusCodes[503] = 'Service Unavailable';
 statusCodes[504] = 'Gateway Time-out';
 statusCodes[505] = 'HTTP Version not supported';
 
+var defaultHeight = 23;
+//var defaultHeightPx = defaultHeight+"px";
+ 
+//even listener to simply make the request when ctrl + enter is pressed
+document.addEventListener("keydown", function (e) 
+{
+  if (e.keyCode === 13 && e.ctrlKey) 
+  {
+    e.preventDefault();
+    sendRequest(); 
+  }
+}, false);
+
+//changes the size of the text area so the all text is visible.
 function grow(id) {
   var textarea = document.getElementById(id);
   var newHeight = textarea.scrollHeight;
   var currentHeight = textarea.clientHeight;
   if (newHeight == 0 || $("#"+id).val() == "") {
-    newHeight = 23;
+    newHeight = defaultHeight;
   }
   	textarea.style.height = newHeight + 'px';
 }
@@ -66,16 +80,18 @@ function clearFields() {
   $("#responseHeaders").val("");
   $("#codeData").text("");
 
-  //$("#responseHeaders").height(20);
-  //$("#headers").height(20);
-  //$("#postputdata").height(20);
+  $("#responseHeaders").height(defaultHeight);
+  $("#headers").height(defaultHeight);
+  $("#postputdata").height(defaultHeight);
 
   $("#respHeaders").css("display", "none");
   $("#respData").css("display", "none");
 }
 
 function sendRequest() {
-  if($("#url").val() != "") {
+  var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+
+  if(regexp.test($("#url").val())) {
   clearFields();
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = readResponse;
@@ -95,7 +111,7 @@ function sendRequest() {
       }
     }
     catch(e){
-      console.log(e);
+      //console.log(e);
       //$("#responseStatus").html("<span style=\"color:#FF0000\">"+chrome.i18n.getMessage("bad_request")+"</span>");
       $("#respHeaders").css("display", "none");
       $("#respData").css("display", "none");
@@ -104,6 +120,11 @@ function sendRequest() {
       $("#responsePrint").css("display", "");
     }
   } else {
+  
+  	if($("#url").val() == "")
+  		alert('Please provide a URL to call');
+  	else
+  		alert('Please provide a valid URL');
     //console.log("no uri");
     //$("#responseStatus").html("<span style=\"color:#FF0000\">"+chrome.i18n.getMessage("bad_request")+"</span>");
     $("#respHeaders").css("display", "none");
@@ -130,8 +151,10 @@ function readResponse() {
 	  $("#debugLinks").css("display", "");
       }
       var json = false;
-      if(json = isValidJson(jQuery.trim(this.responseText)))
-      	$("#codeData").html(json);
+      if(json = isValidJson(jQuery.trim(this.responseText))){
+      console.log(json);
+      $("#codeData").html(json);
+      }
       else{
       	$("#codeData").html(jQuery.trim(this.responseText).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
 	      	$.chili.options.automatic.active = false;
@@ -167,9 +190,9 @@ function toggleData() {
 }
 
 function resizeFields(){
-  $("#url").width($("#purl").width()-130);
-  //$("#headers").width($("#pheaders").width()-80-30);
-  //$("#postputdata").width($("#data").width()-80-30);
+ $("#url").width($("#purl").width()-250);
+ $("#headers").width($("#pheaders").width()-250);
+ $("#postputdata").width($("#data").width()-250);
 
   //$("#responseHeaders").width($("#respHeaders").width()-80-30);
   //$("#responseData").width($("#respHeaders").width()-80-30);
@@ -180,7 +203,6 @@ function init() {
   $("#response").css("display", "none");
   $("#loader").css("display", "");
   $("#responsePrint").css("display", "none");
-  //$("#sep").css("display", "none");
 
   $("#data").css("display", "none");
 
@@ -824,20 +846,27 @@ $(document).ready(function() {
         }
         
         function isValidJson(json){
-        
+	        console.log('enter')
 	        var value = false;
 	        try
 	        {
+console.log('1')
 	        	jsonObject = jsonlint.parse(json);
+	        	console.log('2')
 	        	var tmpJson = JSON.stringify(jsonObject, null, "  ");
+	        	console.log('3')
 	        	var parsedObject = JSON.parse(tmpJson);
+	        	console.log('4')
 	        	value = new JSONFormatter().objectToHTML(parsedObject);
+	        	console.log('5')
 	        }
 	        catch(err)
 		    {
+			    console.log('exit')
 		      value = false;
 		    }
-		        
+		    console.log('exit')
+		    return value;
 	    }
 
         //load();

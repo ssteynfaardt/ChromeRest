@@ -16,8 +16,7 @@
   },
 
   "default_locale": "en",
-
-  "options_page": "index.html",
+  "options_page": "options.html",
   "background_page": "background.html",
   "permissions": ["tabs", "http://*/*", "https://*/*"]
 }
