@@ -17,16 +17,13 @@ textarea{resize: none;}
 #loader{background:url(loader.gif) no-repeat center 5px;height:30px;padding-top:50px;text-align:center;width:100%}
 #response p{clear:both}
 #response p span{clear:both;margin-bottom:1em;margin-top:.1em;min-height:20px;width:80px}
-#responseData{border:1px solid #BBB;min-height:20px;overflow:auto;padding-left:3px;position:relative}
+#responseData{border:1px solid #BBB;min-height:20px;overflow:auto;padding-left:3px;position:relative;}
 :focus{outline:none}
 html,body{background-color:#e4e4e4;background-image:url(whitey.png);font-family:"Helvetica Neue", Helvetica, Arial, sans-serif}
 #top_bit{margin:0 auto;width:760px}
 form{margin:20px auto}
-input,textarea,select{-webkit-transition:all .25s ease-in-out;background-color:#f7f7f7;border:1px solid #ccc;border-radius:5px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;font-size:13px;
-height:23px;min-width:350px;}
-select{
-	min-width:90px;
-}
+input,textarea,select{-webkit-transition:all .25s ease-in-out;background-color:#f7f7f7;border:1px solid #ccc;border-radius:5px;font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;font-size:13px;height:23px;min-width:350px;}
+select{min-width:90px;}
 input:focus,textarea:focus,select:focus{-webkit-transform:scale(1.01);background-color:#fafafa;border:1px solid rgba(58,152,201,0.85);box-shadow:0 0 7px rgba(69,174,228,0.45)}
 ::-webkit-input-placeholder{color:#7f7f7f;font-size:11px;text-shadow:0 1px 1px #fff}
 input:not(:focus),textarea:not(:focus),select:not(:focus){opacity:0.5}
@@ -43,71 +40,113 @@ hr{background:0 to(#e4e4e4));border:none;color:#FFF;display:block;height:1px}
 h1{color:#434343;font-size:18px;text-shadow:0 1px 1px #fff}
 #response input,#response textarea,#response p span{background-image:none;font-size:font-size: 13px!important}
 
+.codeDataFullscreen{
+    float: right;
+    padding: 6px;
+    padding-top: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom-left-radius: 8px;
+    color: #444;
+    opacity: 0.6;
+}
+
+#fullscreenClose{
+    position: fixed;
+    background: url(close.png);
+    top: 10px;
+    width: 33px;
+    height: 33px;
+    opacity: 0.6;
+}
+
+#fullscreenClose:hover,.codeDataFullscreen:hover{
+    cursor: pointer;
+    opacity: 0.9;
+}
+
+.container{
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1020px;
+    min-width: 400px;
+}
+.fullscreen {
+    float:left;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #eee;
+    z-index: 999;
+    display: none;
+    overflow: auto;
+}
+
 .action{
-	float:left;font-size:10px;color:#585858;text-shadow:0 1px 1px #fff;
-	margin: 0px 0 0 10px;
-	padding: 0;
-	list-style-type: none;
+    float:left;font-size:10px;color:#585858;text-shadow:0 1px 1px #fff;
+    margin: 0px 0 0 10px;
+    padding: 0;
+    list-style-type: none;
 }
 
 #headers, #postputdata{
-	float:left;
+    float:left;
 }
 
 .action li{
-	list-style:none;
+    list-style:none;
 }
 
 code{
-	white-space: pre;
-	font-family: "Courier New",Courier,monospace;
+    white-space: pre;
+    font-family: "Courier New",Courier,monospace;
 }
 
 code .prop {
-            font-weight: bold;
-        }
+    font-weight: bold;
+}
 
 code .null {
-            color: red;
-        }
+    color: red;
+}
 
-       code .bool {
-            color: blue;
-        }
+code .bool {
+    color: blue;
+}
 
-       code .num {
-            color: blue;
-        }
+code .num {
+    color: blue;
+}
 
-       code .string {
-            color: green;
-        }
+code .string {
+    color: green;
+}
 
-       code .collapser {
-            position: absolute;
-            left: -1em;
-            cursor: pointer;
-        }
+code .collapser {
+    position: absolute;
+    left: -1em;
+    cursor: pointer;
+}
 
-       code li {
-            list-style: none;
-            position: relative;
-        }
+code li {
+    list-style: none;
+    position: relative;
+}
 
-       code li:after {
-            content: ',';
-        }
+code li:after {
+    content: ',';
+}
 
-       code li:last-of-type:after {
-            content: '';
-        }
+code li:last-of-type:after {
+    content: '';
+}
 
-       code .fn {
-            color: gray;
-        }
+code .fn {
+    color: gray;
+}
 
-       code ul {
-            list-style: none;
-            margin: 0 0 0 2em;
-            padding: 0;
-        }
+code ul {
+    list-style: none;
+    margin: 0 0 0 2em;
+    padding: 0;
+}
