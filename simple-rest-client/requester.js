@@ -91,6 +91,35 @@ function clearFields() {
     $("#postputaction").css("display", "none");
 }
 
+function saveCurrentQuery(){
+    
+    var restCall = {
+        "url": $("#url").val(), 
+        "method":$(':selected').val(),
+        "headers":$('#headers').val(),
+        "postdata":$('#postputdata').val()
+    };
+    localStorage.setItem("lastCall", JSON.stringify(restCall));
+}
+
+
+function loadLastQuery(){
+    var lastCall = JSON.parse(localStorage.getItem("lastCall"));
+    if(lastCall){
+        $('#url').val(lastCall.url);
+        $(':selected').val(lastCall.method);
+        $('#headers').val(lastCall.headers);
+        $('#postputdata').val(lastCall.postdata);
+        grow('headers');
+        grow('postputdata');
+    }
+}
+
+function clearLastQuery(){
+    localStorage.removeItem('lastCall');
+}
+
+
 function sendRequest() {
     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
 
@@ -99,6 +128,7 @@ function sendRequest() {
         var xhr = new XMLHttpRequest();
         xhr.onreadystatechange = readResponse;
         try {
+            saveCurrentQuery();
             xhr.open($(':selected').val().toUpperCase(), $("#url").val(), true);
             var headers = $("#headers").val();
             headers = headers.split("\n");
@@ -219,12 +249,15 @@ function init() {
     $("#responseStatus").html("");
     $("#respHeaders").css("display", "none");
     $("#respData").css("display", "none");
+    
+    loadLastQuery();
 
     $("#submit").click(function() {
         sendRequest();
         return false;
     });
     $("#reset").click(function() {
+        clearLastQuery();
         location.reload();
     });
     $(".select").change(function() {
