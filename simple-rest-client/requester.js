@@ -102,6 +102,221 @@ function saveCurrentQuery(){
     localStorage.setItem("lastCall", JSON.stringify(restCall));
 }
 
+// Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
+// PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
+function rawurlencode (str) {
+	str = (str + '').toString();
+	return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').
+	replace(/\)/g, '%29').replace(/\*/g, '%2A');
+}
+
+//helper function for base64_encode
+function utf8_encode (argString) {
+	if (argString === null || typeof argString === "undefined") {
+		return "";
+	}
+
+	var string = (argString + ''); // .replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+	var utftext = "",
+	start, end, stringl = 0;
+
+	start = end = 0;
+	stringl = string.length;
+	for (var n = 0; n < stringl; n++) {
+		var c1 = string.charCodeAt(n);
+		var enc = null;
+
+		if (c1 < 128) {
+			end++;
+		} else if (c1 > 127 && c1 < 2048) {
+			enc = String.fromCharCode((c1 >> 6) | 192) + String.fromCharCode((c1 & 63) | 128);
+		} else {
+			enc = String.fromCharCode((c1 >> 12) | 224) + String.fromCharCode(((c1 >> 6) & 63) | 128) + String.fromCharCode((c1 & 63) | 128);
+		}
+		if (enc !== null) {
+			if (end > start) {
+				utftext += string.slice(start, end);
+			}
+			utftext += enc;
+			start = end = n + 1;
+		}
+	}
+
+	if (end > start) {
+		utftext += string.slice(start, stringl);
+	}
+
+	return utftext;
+}
+
+//base64 encode a string
+function base64_encode (data) {
+	var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+	var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+	ac = 0,
+	enc = "",
+	tmp_arr = [];
+
+	if (!data) {
+		return data;
+	}
+
+	data = this.utf8_encode(data + '');
+
+	do { // pack three octets into four hexets
+		o1 = data.charCodeAt(i++);
+		o2 = data.charCodeAt(i++);
+		o3 = data.charCodeAt(i++);
+
+		bits = o1 << 16 | o2 << 8 | o3;
+
+		h1 = bits >> 18 & 0x3f;
+		h2 = bits >> 12 & 0x3f;
+		h3 = bits >> 6 & 0x3f;
+		h4 = bits & 0x3f;
+
+		// use hexets to index into b64, and append result to encoded string
+		tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+	} while (i < data.length);
+
+	enc = tmp_arr.join('');
+    
+	var r = data.length % 3;
+    
+	return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+
+}
+
+function uniqid (prefix, more_entropy) {
+    if (typeof prefix == 'undefined') {
+        prefix = "";
+    }
+
+    var retId;
+    var formatSeed = function (seed, reqWidth) {
+        seed = parseInt(seed, 10).toString(16); // to hex str
+        if (reqWidth < seed.length) { // so long we split
+            return seed.slice(seed.length - reqWidth);
+        }
+        if (reqWidth > seed.length) { // so short we pad
+            return Array(1 + (reqWidth - seed.length)).join('0') + seed;
+        }
+        return seed;
+    };
+
+    // BEGIN REDUNDANT
+    if (!this.php_js) {
+        this.php_js = {};
+    }
+    // END REDUNDANT
+    if (!this.php_js.uniqidSeed) { // init seed with big random int
+        this.php_js.uniqidSeed = Math.floor(Math.random() * 0x75bcd15);
+    }
+    this.php_js.uniqidSeed++;
+
+    retId = prefix; // start with prefix, add current milliseconds hex string
+    retId += formatSeed(parseInt(new Date().getTime() / 1000, 10), 8);
+    retId += formatSeed(this.php_js.uniqidSeed, 5); // add seed hex string
+    if (more_entropy) {
+        // for more entropy we add a float lower to 10
+        retId += (Math.random() * 10).toFixed(8).toString();
+    }
+
+    return retId;
+}
+
+function sha1_hash_mac(message,secret){
+	// \x25
+	return Crypto.HMAC(Crypto.SHA1, message, secret, {
+		asString: true
+	});	
+}
+
+function authenticationHeader(consumerKey,consumerSecret){
+	var timestamp = Math.round(new Date().getTime() / 1000),
+	nonce = uniqid(),
+	base = rawurlencode('oauth_consumer_key="'+consumerKey+'"&oauth_nonce="'+nonce+'&oauth_timestamp="'+timestamp+'"'),
+	key = rawurlencode(consumerSecret),
+	headers=new Array();
+	
+	signature = rawurlencode(base64_encode(sha1_hash_mac(base, key)));
+	
+	headers.push('Authorization: oauth_signature="'+signature+'",oauth_nonce="'+nonce+'",oauth_timestamp="'+timestamp+'",oauth_consumer_key="'+consumerKey+'"');
+	headers.push('Content-Type: application/x-www-form-urlencoded');
+	return headers;
+}
+
+function sendAuthenticationHeader(){
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = readAuthenticationResponse;
+	try {
+		var authorizeURL = 'http://'+$("#url").val().match(/:\/\/(www\.)?(.[^/:]+)/)[2]+'/oauth/authorize';
+		xhr.open('POST',authorizeURL, true);
+		var headers = authenticationHeader('57b6c9c6612b83e77381402cde3882ab04d5bbb0f','cadf46959433fc38aec49812753dd460');
+		for (var i = 0; i < headers.length; i++) {
+			var header = headers[i].split(": ");
+			if (header[1])
+				xhr.setRequestHeader(header[0],header[1]);
+		}
+		xhr.send("");
+	}
+	catch(e){
+		smoke.alert('Failed to send oAuth request');
+	}
+}
+
+function readAuthenticationResponse() {
+	console.dir(this.responseText);
+	smoke.alert('call was made');
+	/*
+	if (this.readyState == 4) {
+		try {
+			if(this.status == 0) {
+				throw('Status = 0');
+			}
+			$("#responseStatus").html(this.status+' '+statusCodes[this.status]);
+			$("#responseHeaders").val(jQuery.trim(this.getAllResponseHeaders()));
+			var debugurl = /X-Debug-URL: (.*)/i.exec($("#responseHeaders").val());
+			if (debugurl) {
+				$("#debugLink").attr('href', debugurl[1]).html(debugurl[1]);
+				$("#debugLinks").css("display", "");
+			}
+			var json = false;
+			if(json = isValidJson(jQuery.trim(this.responseText))){
+				$("#codeData").html(json);
+				$("#fullscreenCode").html($("#codeData").html());
+			}
+			else{
+				$("#codeData").html(jQuery.trim(this.responseText).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+				$.chili.options.automatic.active = false;
+				$.chili.options.decoration.lineNumbers = false;
+				var $chili = $('#codeData').chili();
+				$("#fullscreenCode").html($("#codeData").html());
+			}
+            
+			$("#respHeaders").css("display", "");
+			$("#respData").css("display", "");
+
+			$("#loader").css("display", "none");
+			$("#responsePrint").css("display", "");
+			$("#fullscreen").width(window.innerWidth-20);
+			$("#fullscreen").height(window.innerHeight-20);
+			$("#fullscreenClose").css("left",window.innerWidth-60+"px");
+
+			grow('responseHeaders');
+		}
+		catch(e) {
+			$("#responseStatus").html("No response.");
+			$("#respHeaders").css("display", "none");
+			$("#respData").css("display", "none");
+
+			$("#loader").css("display", "none");
+			$("#responsePrint").css("display", "");
+		}
+	}
+	*/
+}
+
 
 function loadLastQuery(){
     var lastCall = JSON.parse(localStorage.getItem("lastCall"));
