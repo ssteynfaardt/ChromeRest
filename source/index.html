@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>Chrome REST</title>
+        <link rel="stylesheet" type="text/css" href="css/reset.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" media="screen,projection" href="css/ui.totop.css" />
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <link rel="stylesheet" href="js/smoke/smoke.css" type="text/css" media="screen" />  
+        <link rel="stylesheet" href="js/smoke/100s.css" type="text/css" media="screen" />  
+        <script type="text/javascript" src="js/smoke/smoke.min.js"></script>
+
+        <script type="text/javascript" src="js/jquery.chili.min.js"></script>
+        <script type="text/javascript" src="js/jquery.chili.recipes.js"></script>
+		<script type="text/javascript" src="js/sha1.js"></script>
+        <script type="text/javascript" src="js/requester.js"></script>
+        <script src="js/easing.js" type="text/javascript"></script>
+        <script src="js/jquery.ui.totop.js" type="text/javascript"></script>
+        <script type="text/javascript">
+		$(document).ready(function() {
+			$().UItoTop({ easingType: 'easeOutQuart' });	
+            /*$('body').append('<a href="#" id="testtest">test test 123</a>');
+            $('#testtest').click(function(){
+                smoke.alert('testing');
+                return false;
+            });*/
+		});
+	</script>
+    </head>
+    <body>
+        <div id="fullscreen" class="fullscreen">
+            <a href="#"><div id="fullscreenClose">Close Full Screen</div></a>
+            <pre><code name="fullscreenCode" id="fullscreenCode">&nbsp;</code></pre>
+        </div>
+        <div id="container" class="container">
+            <header>
+                <h1 class="_msg_">Chrome REST</h1>
+            </header>
+            <section id="request">
+                <fieldset>
+                    <legend class="_msg_">request</legend>  
+                    <p id="purl">
+                        <label for="url" class="_msg_">URL</label> 
+                        <input type="url" required autofocus placeholder="http://www.google.com" name="url" id="url" tabindex="1">
+                        <select class="select" name="method" tabindex="2" required>
+                            <option value="get" id="get" selected>GET</option>
+                            <option value="post" id="post">POST</option>
+                            <option value="put" id="put" >PUT</option>
+                            <option value="delete" id="delete">DELETE</option>
+                            <option value="head" id="head">HEAD</option>
+                            <option value="options" id="options">OPTIONS</option>
+                        </select>
+                    </p>
+                    <p id="pheaders">
+                        <label for="headers" class="_msg_">Headers</label>
+                    <div><textarea id="headers" name="headers" placeholder='access_token: "f0258b6685684c113bad94d91b8fa02a"' id="headers" tabindex="3" onkeyup="grow('headers');"></textarea>
+											<ul class="action"><li>form</li><li>hide</li></ul></div><img id="refresh" onclick="sendAuthenticationHeader()" title="Refresh the access_token" src="images/refresh.png"/>
+                    </p>
+                    <p id="data">
+                        <label for="postputdata" class="_msg_">Data</label>
+                        <textarea name="data" id="postputdata" tabindex="4" placeholder="first_name=John&last_name=Joe" onkeyup="grow('postputdata');"></textarea>
+                    <ul id="postputaction"class="action"><li>form</li><li>hide</li></ul>
+                    </p>
+                    <p class="buttons">
+                        <input class="_msg_val_" type="button" value="send" id="submit" tabindex="5"> <input class="_msg_val_" type="button" value="clear" id="reset"> 
+                    </p>
+                </fieldset>
+            </section>
+
+            <section id="response">
+                <fieldset>
+                    <legend class="_msg_">response</legend>
+                    <div id="loader" class="_msg_">processing</div>
+                    <div id="responsePrint">
+                        <p id="pstatus">
+                            <label class="_msg_">Status</label> 
+                            <span id="responseStatus">&nbsp;</span>
+                        </p>
+                        <div id="respData">
+                            <label for="responseData" class="_msg_">Data</label>
+                            <div name="responseData" id="responseData" contenteditable="true">
+                                <span class="codeDataFullscreen">Full Screen</span>
+                                <pre><code name="codeData" id="codeData" class="chili-lang-html">&nbsp;</code></pre>
+                            </div>
+                        </div>
+                        <p id="respHeaders">
+                            <label for="responseHeaders" class="_msg_">Headers</label> 
+                            <textarea name="responseHeaders" id="responseHeaders" tabindex="6" onkeyup="grow('responseHeaders');"></textarea>
+                        </p>
+                        <p id="debugLinks" style="display: none;">
+                            <label for="debugLink" class="_msg_">Debuglink</label> 
+                            <a href="" id="debugLink"></a>
+                        </p>
+                    </div>
+                </fieldset>
+            </section>
+            <footer>
+                <p>Copyright &copy; 2011 - <a href="http://stephan.steynfaardt.com" target="_blank">Stephan Steynfaardt</a></p>
+            </footer>
+        </div>
+    </body>
+</html>

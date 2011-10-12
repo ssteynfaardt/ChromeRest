@@ -1,0 +1,22 @@
+{
+  "name": "Chrome Rest",
+  "version": "0.9",
+  
+  "description": "A simple chrome REST plugin",
+  "icons": {
+    "16": "images/icon_16.png",
+    "32": "images/icon_32.png",
+    "48": "images/icon_48.png",
+    "128": "images/icon_128.png"
+  },
+
+  "browser_action": {
+    "default_icon": "images/icon_16.png",
+    "default_title": "Chrome Rest"
+  },
+
+  "default_locale": "en",
+  "options_page": "options.html",
+  "background_page": "background.html",
+  "permissions": ["tabs", "http://*/*", "https://*/*"]
+}
